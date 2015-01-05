@@ -3,8 +3,16 @@
 -- written by Lukas Epple aka sternenseemann
 import Data.List
 import Data.Maybe
-import qualified Data.ByteString as B
+import qualified Data.ByteString.Char8 as B
+--import qualified Data.ByteString as B
 import Network.SimpleIRC
+
+botNick :: String
+botNick = "klammeraffe"
+freenode = (mkDefaultConfig "irc.freenode.net" botNick)
+			{ cChannels = ["#augsburg"],
+			  cEvents   = [(Privmsg onPrivmsg)]
+			}
 
 generateClosingParens :: B.ByteString -> B.ByteString
 generateClosingParens msg = calcParens msg B.empty
@@ -14,7 +22,7 @@ generateClosingParens msg = calcParens msg B.empty
 		| B.head msg `B.elem` openingParens = calcParens (B.tail msg) (B.cons (convertToClosingParen (B.head msg)) parenStack)
 		| not (B.null parenStack) && 
 			B.head msg == B.head parenStack = calcParens (B.tail msg) (B.tail parenStack)
---		| (head msg) `elem` closingParens = "Unmatched closing paren, you fool!"
+--		| B.head msg `B.elem` closingParens = "Unmatched closing paren, you fool!"
 		| B.head msg `B.elem` closingParens = ""
 		| otherwise                        = calcParens (B.tail msg) parenStack
 		where openingParens = "([<{"
@@ -24,14 +32,12 @@ generateClosingParens msg = calcParens msg B.empty
 onPrivmsg :: EventFunc
 onPrivmsg server msg 
 	| not (B.null reply) = sendMsg server chan reply
+	| B.isPrefixOf (B.pack botNick) (mMsg msg) = sendMsg server chan (B.append nick ": I only fix your unclosed parens.")
 	| otherwise = print msg
 	where
+		nick  = fromJust $ mNick msg
 		chan  = fromJust $ mChan msg
 		reply = generateClosingParens (mMsg msg)
 
-freenode = (mkDefaultConfig "irc.freenode.net" "klammeraffe")
-			{ cChannels = ["#augsburg"],
-			  cEvents   = [(Privmsg onPrivmsg)]
-			}
 
 main = connect freenode False True
