@@ -26,14 +26,14 @@ generateClosingParens msg = E.encodeUtf8 (calcParens (E.decodeUtf8 msg) T.empty)
             T.head msg == T.head parenStack = calcParens (T.tail msg) (T.tail parenStack)
           | T.head msg `elem` closingParens   = ""
           | otherwise                         = calcParens (T.tail msg) parenStack
-          where openingParens = "([<{⟦⟨⟪〚⁅〈⎴⏞⏠❬❰❲❴⦃⦗⧼⸦〈《【〔〖〘"
-                closingParens = ")]>}⟧⟩⟫〛⁆〉⎵⏟⏡❭❱❳❵⦄⦘⧽⸧〉》】〕〗〙"
+          where openingParens = "([<{\"\'„⟦⟨⟪〚⁅〈⎴⏞⏠❬❰❲❴⦃⦗⧼⸦〈《【〔〖〘"
+                closingParens = ")]>}\"\'”}⟧⟩⟫〛⁆〉⎵⏟⏡❭❱❳❵⦄⦘⧽⸧〉》】〕〗〙"
                 convertToClosingParen p = T.index closingParens (fromMaybe 0 (T.findIndex (== p) openingParens))
                 elem :: Char -> T.Text -> Bool
                 elem c str = isJust (T.findIndex (== c) str)
 
 onPrivmsg :: EventFunc
-onPrivmsg server msg 
+onPrivmsg server msg
   | not (B.null reply) = sendMsg server chan reply
   | B.isInfixOf (B.pack botNick) (mMsg msg) = sendMsg server chan (B.append nick ": I only fix your unclosed parens.")
   | otherwise = print msg
