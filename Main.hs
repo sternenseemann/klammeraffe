@@ -21,13 +21,13 @@ generateClosingParens msg = E.encodeUtf8 (calcParens (E.decodeUtf8 msg) T.empty)
         calcParens msg parenStack
           | T.null parenStack && T.null msg   = ""
           | T.null msg                        = T.cons (T.head parenStack) (calcParens msg (T.tail parenStack))
-          | T.head msg `elem` openingParens   = calcParens (T.tail msg) (T.cons (convertToClosingParen (T.head msg)) parenStack)
           | not (T.null parenStack) &&
             T.head msg == T.head parenStack = calcParens (T.tail msg) (T.tail parenStack)
+          | T.head msg `elem` openingParens   = calcParens (T.tail msg) (T.cons (convertToClosingParen (T.head msg)) parenStack)
           | T.head msg `elem` closingParens   = ""
           | otherwise                         = calcParens (T.tail msg) parenStack
-          where openingParens = "([<{\"\'„⟦⟨⟪〚⁅〈⎴⏞⏠❬❰❲❴⦃⦗⧼⸦〈《【〔〖〘"
-                closingParens = ")]>}\"\'”}⟧⟩⟫〛⁆〉⎵⏟⏡❭❱❳❵⦄⦘⧽⸧〉》】〕〗〙"
+          where openingParens = "([<{\"\'„“‚⟦⟨⟪〚⁅〈⎴⏞⏠❬❰❲❴⦃⦗⧼⸦〈《【〔〖〘"
+                closingParens = ")]>}\"\'“”‘⟧⟩⟫〛⁆〉⎵⏟⏡❭❱❳❵⦄⦘⧽⸧〉》】〕〗〙"
                 convertToClosingParen p = T.index closingParens (fromMaybe 0 (T.findIndex (== p) openingParens))
                 elem :: Char -> T.Text -> Bool
                 elem c str = isJust (T.findIndex (== c) str)
