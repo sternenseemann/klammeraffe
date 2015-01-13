@@ -35,7 +35,7 @@ generateClosingParens msg = E.encodeUtf8 (calcParens (E.decodeUtf8 msg) T.empty)
 onPrivmsg :: EventFunc
 onPrivmsg server msg
   | not (B.null reply) = sendMsg server chan reply
-  | B.isInfixOf (B.pack botNick) (mMsg msg) = sendMsg server chan (B.append nick ": I only fix your unclosed parens.")
+  | B.isPrefixOf (B.pack botNick) (mMsg msg) = sendMsg server chan (B.append nick ": I only fix your unclosed parens.")
   | otherwise = print msg
   where nick  = fromJust $ mNick msg
         chan  = fromJust $ mChan msg
