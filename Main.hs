@@ -47,7 +47,7 @@ prop_AtLeastAsManyClosingParens inp =
 onPrivmsg :: EventFunc
 onPrivmsg server msg
   | not (B.null reply) = sendMsg server chan reply
-  | B.isPrefixOf (B.pack botNick) (mMsg msg) = sendMsg server chan (B.append nick ": I only fix your unclosed parens.")
+  | B.pack botNick `B.isPrefixOf` mMsg msg = sendMsg server chan (B.append nick ": I only fix your unclosed parens.")
   | otherwise = print msg
   where nick  = fromJust $ mNick msg
         chan  = fromJust $ mChan msg
