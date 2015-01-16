@@ -19,8 +19,8 @@ freenode = (mkDefaultConfig "irc.freenode.net" botNick)
 
 openingParens :: String
 closingParens :: String
-openingParens = "([<{\"\'„“‚⟦⟨⟪〚⁅〈⎴⏞⏠❬❰❲❴⦃⦗⧼⸦〈《【〔〖〘"
-closingParens = ")]>}\"\'“”‘⟧⟩⟫〛⁆〉⎵⏟⏡❭❱❳❵⦄⦘⧽⸧〉》】〕〗〙"
+openingParens = "([<{\"„“‚⟦⟨⟪〚⁅〈⎴⏞⏠❬❰❲❴⦃⦗⧼⸦〈《【〔〖〘"
+closingParens = ")]>}\"“”‘⟧⟩⟫〛⁆〉⎵⏟⏡❭❱❳❵⦄⦘⧽⸧〉》】〕〗〙"
 
 -- busywork
 generateClosingParens :: B.ByteString -> B.ByteString
