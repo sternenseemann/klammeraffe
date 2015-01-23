@@ -24,7 +24,7 @@ closingParens = ")]>}\"“”‘⟧⟩⟫〛⁆〉⎵⏟⏡❭❱❳❵⦄⦘⧽
 
 -- busywork
 generateClosingParens :: B.ByteString -> B.ByteString
-generateClosingParens msg = B.pack (calcParens (B.unpack msg) "")
+generateClosingParens msg = B.pack $ calcParens (B.unpack msg) ""
 
 calcParens :: String -> String -> String
 calcParens msg parenStack
