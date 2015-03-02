@@ -17,7 +17,7 @@ botNick = "klammeraffe"
 freenode :: IrcConfig
 freenode = (mkDefaultConfig "irc.freenode.net" botNick)
            { cChannels = ["#augsburg"],
-               cEvents   = [(Privmsg onPrivmsg)]
+               cEvents   = [Privmsg onPrivmsg]
            }
 
 openingParens :: String
@@ -65,11 +65,11 @@ main = connect freenode False True
 
 -- tests
 prop_AtLeastAsManyClosingParens inp =
-  foldr1 (&&) $ map allParensClosed $ zip openingParens closingParens
+  and $ zipWith allParensClosed openingParens closingParens
     where
-      allParensClosed :: (Char, Char) -> Bool
-      allParensClosed (l, r) = number l completeStr <= number r completeStr || oneElem closingParens completeStr -- if there are unmatched parens calcParens just returns ""
-      completeStr = inp ++ calcParens inp "" 
+      allParensClosed :: Char ->  Char -> Bool
+      allParensClosed l r = number l completeStr <= number r completeStr || oneElem smileOpeningChars completeStr || oneElem closingParens completeStr -- if there are unmatched parens calcParens just returns "", smile recognition also does unexpected things
+      completeStr = inp ++ calcParens inp "" Normal
       number c str = length (elemIndices c str)
       oneElem elems str = foldl (\acc x -> x `elem` str || acc) False elems
 
