@@ -7,6 +7,9 @@ import qualified Data.ByteString.Char8 as B
 import Network.SimpleIRC
 import Test.QuickCheck
 
+data ParenState = Normal | ParenIgnore
+  deriving (Show, Eq)
+
 -- configuration
 botNick :: String
 botNick = "klammeraffe"
@@ -22,27 +25,37 @@ closingParens :: String
 openingParens = "([<{\"„“‚⟦⟨⟪〚⁅〈⎴⏞⏠❬❰❲❴⦃⦗⧼⸦〈《【〔〖〘"
 closingParens = ")]>}\"“”‘⟧⟩⟫〛⁆〉⎵⏟⏡❭❱❳❵⦄⦘⧽⸧〉》】〕〗〙"
 
+smileOpeningChars :: String
+smileOpeningChars = ":;8"
+
+smileContinuation :: String
+smileContinuation = "-"
+
 -- busywork
 generateClosingParens :: B.ByteString -> B.ByteString
-generateClosingParens msg = B.pack $ calcParens (B.unpack msg) ""
+generateClosingParens msg = B.pack $ calcParens (B.unpack msg) "" Normal
 
-calcParens :: String -> String -> String
-calcParens msg parenStack
-    | null parenStack && null msg   = ""
-    | null msg                        = head parenStack : calcParens msg (tail parenStack)
+calcParens :: String -> String -> ParenState -> String
+calcParens msg parenStack state
+    | null parenStack && null msg       = ""
+    | null msg                          = head parenStack : calcParens msg (tail parenStack) state
+    | head msg `elem` smileOpeningChars = calcParens (tail msg) parenStack ParenIgnore
+    | state == ParenIgnore              = if head msg `elem` smileContinuation
+                                            then calcParens (tail msg) parenStack ParenIgnore
+                                            else calcParens (tail msg) parenStack Normal
     | not (null parenStack) &&
-      head msg == head parenStack = calcParens (tail msg) (tail parenStack)
-    | head msg `elem` openingParens   = calcParens (tail msg) (convertToClosingParen (head msg) : parenStack)
-    | head msg `elem` closingParens   = ""
-    | otherwise                         = calcParens (tail msg) parenStack
+      head msg == head parenStack       = calcParens (tail msg) (tail parenStack) state
+    | head msg `elem` openingParens     = calcParens (tail msg) (convertToClosingParen (head msg) : parenStack) state
+    | head msg `elem` closingParens     = ""
+    | otherwise                         = calcParens (tail msg) parenStack state
     where
           convertToClosingParen :: Char -> Char
           convertToClosingParen p = closingParens !! fromMaybe 0 (elemIndex p openingParens)
 
 onPrivmsg :: EventFunc
 onPrivmsg server msg
-  | not (B.null reply) = sendMsg server chan reply
-  | B.pack botNick `B.isPrefixOf` mMsg msg = sendMsg server chan (B.append nick ": I only fix your unclosed parens.")
+  | not $ B.null reply = sendMsg server chan reply
+  | B.pack botNick `B.isPrefixOf` mMsg msg = sendMsg server chan $ B.append nick ": I only fix your unclosed parens."
   | otherwise = print msg
   where nick  = fromJust $ mNick msg
         chan  = fromJust $ mChan msg
