@@ -22,8 +22,8 @@ freenode = (mkDefaultConfig "irc.freenode.net" botNick)
 
 openingParens :: String
 closingParens :: String
-openingParens = "([<{\"„“‚⟦⟨⟪〚⁅〈⎴⏞⏠❬❰❲❴⦃⦗⧼⸦〈《【〔〖〘"
-closingParens = ")]>}\"“”‘⟧⟩⟫〛⁆〉⎵⏟⏡❭❱❳❵⦄⦘⧽⸧〉》】〕〗〙"
+openingParens = "([{\"„“‚⟦⟨⟪〚⁅〈⎴⏞⏠❬❰❲❴⦃⦗⧼⸦〈《【〔〖〘"
+closingParens = ")]}\"“”‘⟧⟩⟫〛⁆〉⎵⏟⏡❭❱❳❵⦄⦘⧽⸧〉》】〕〗〙"
 
 smileOpeningChars :: String
 smileOpeningChars = ":;8"
