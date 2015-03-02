@@ -1,8 +1,8 @@
 # klammeraffe
 
-> an IRC bot to CLOSE ALL THE UNCLOSED PARENS!
+![](./close-all-the-parens.jpg)
 
-This IRC bot processes each message and checks if there are unclosed parentheses. If there are some then it closes them.
+This IRC bot processes each message and checks if there are unclosed parentheses. If there are some then it closes them. Because klammeraffe recognizes smile like `:(` and `:}` and feels with the people using them, it allows the violation of the holy rules in those cases.
 
 ## Usage
 ### sandbox
