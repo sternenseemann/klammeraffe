@@ -26,7 +26,7 @@ openingParens = "([{\"„“‚⟦⟨⟪〚⁅〈⎴⏞⏠❬❰❲❴⦃⦗⧼�
 closingParens = ")]}\"“”‘⟧⟩⟫〛⁆〉⎵⏟⏡❭❱❳❵⦄⦘⧽⸧〉》】〕〗〙"
 
 smileOpeningChars :: String
-smileOpeningChars = ":;8"
+smileOpeningChars = ":;8m"
 
 smileContinuation :: String
 smileContinuation = "-"
